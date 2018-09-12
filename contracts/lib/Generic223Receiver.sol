@@ -1,12 +1,11 @@
 pragma solidity 0.4.24;
 
 
-contract Liven223Receiver {
+contract Generic223Receiver {
     uint public sentValue;
     address public tokenAddr;
     address public tokenSender;
     bool public calledFoo;
-    bool public calledFoo2;
 
     bytes public tokenData;
     bytes4 public tokenSig;
@@ -28,14 +27,9 @@ contract Liven223Receiver {
         _;
     }
 
-
-    event Something(address);
-
-
     function tokenFallback(address _sender, uint _value, bytes _data) public returns (bool success) {
 
         tkn = Tkn(msg.sender, _sender, _value, _data, getSig(_data));
-        emit Something(tkn.sender);
         __isTokenFallback = true;
         address(this).delegatecall(_data);
         __isTokenFallback = false;
@@ -45,10 +39,6 @@ contract Liven223Receiver {
     function foo() public tokenPayable {
         saveTokenValues();
         calledFoo = true;
-    }
-
-    function foo2() public {
-        calledFoo2 = true;
     }
 
     function getSig(bytes _data) private pure returns (bytes4 sig) {
